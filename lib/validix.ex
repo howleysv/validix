@@ -66,10 +66,10 @@ defmodule Validix do
         {:ok, source} -> source
         {:error, reason} -> Source.handle_error(source, reason)
         {:ok, source, value} ->
-          {source, value} = Pipeline.run(source, type, value, opts)
+          {source, value} = Pipeline.run(source, field, type, value, opts)
           if Source.has_error?(source),
             do: source,
-            else: Source.accept(source, field, value)
+            else: Source.accept(source, field, value, opts)
       end
     end
   end

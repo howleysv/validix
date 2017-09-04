@@ -121,14 +121,36 @@ defmodule ValidixTest do
       res = extract(obj)
         |> required_integer(:other)
         |> into(%{})
-      assert res == {:error, %{reason: :field_required, field: :other}}
+      assert {:error, %{reason: :field_required, field: :other}} = res
     end
     for obj <- objs do
       res = extract(obj)
         |> required_integer(:str)
-        |> required_integer(:other)
+        |> required_integer(:int)
         |> into(%{})
-      assert res == {:error, %{reason: :bad_type, field: :str, type: :integer, value: "spam"}}
+      assert {:error, %{reason: :bad_type, field: :str, type: :integer, value: "spam"}} = res
+    end
+  end
+
+
+  test "validation (of multiple fields) raising on failure" do
+    struct = %Struct{}
+    map = Map.from_struct(struct)
+    objs = [struct, map, Enum.into(map, [])]
+    for obj <- objs do
+      assert_raise Validix.Error, fn ->
+        extract!(obj)
+          |> required_integer(:other)
+          |> into(%{})
+      end
+    end
+    for obj <- objs do
+      assert_raise Validix.Error, fn ->
+        extract!(obj)
+          |> required_integer(:str)
+          |> required_integer(:int)
+          |> into(%{})
+      end
     end
   end
 

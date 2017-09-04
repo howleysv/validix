@@ -10,9 +10,14 @@ defmodule Validix.Fetch do
     nillable? = Source.get_opt(source, opts, :nillable, false)
     case Source.fetch(source, field) do
       :error ->
-        {:error, :required_field}
+        error = %Validix.Error{
+          message: "Field #{inspect field} is required",
+          reason: :field_required,
+          field: field,
+        }
+        {:error, error}
       {:ok, nil} when nillable? ->
-        default(source, field, nil)
+        default(source, field, nil, opts)
       {:ok, value} ->
         {:ok, source, value}
     end
@@ -29,7 +34,7 @@ defmodule Validix.Fetch do
       :error ->
         maybe_default(source, field, opts)
       {:ok, nil} when nillable? ->
-        default(source, field, nil)
+        default(source, field, nil, opts)
       {:ok, nil} when not strict_optionals? ->
         maybe_default(source, field, opts)
       {:ok, value} ->
@@ -38,11 +43,11 @@ defmodule Validix.Fetch do
   end
 
 
-  @spec default(Source.t, field :: term, value :: term)
+  @spec default(Source.t, field :: term, value :: term, opts :: Keyword.t)
       :: {:ok, Source.t}
 
-  defp default(source, field, value) do
-    {:ok, Source.accept(source, field, value)}
+  defp default(source, field, value, opts) do
+    {:ok, Source.accept(source, field, value, opts)}
   end
 
 
@@ -51,8 +56,8 @@ defmodule Validix.Fetch do
 
   defp maybe_default(source, field, opts) do
     case Keyword.fetch(opts, :default) do
-      {:ok, fun} when is_function(fun) -> default(source, field, fun.())
-      {:ok, value} -> default(source, field, value)
+      {:ok, fun} when is_function(fun) -> default(source, field, fun.(), opts)
+      {:ok, value} -> default(source, field, value, opts)
       :error -> {:ok, source}
     end
   end

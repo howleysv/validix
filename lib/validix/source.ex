@@ -63,10 +63,12 @@ defmodule Validix.Source do
   end
 
 
-  @spec accept(This.t, field :: term, value :: term) :: This.t
+  @spec accept(This.t, field :: term, value :: term, field_opts :: Keyword.t)
+      :: This.t
 
-  def accept(this, field, value) do
-    %This{this | extracted: [{field, value} | this.extracted]}
+  def accept(this, field, value, field_opts) do
+    name = Keyword.get(field_opts, :name, field)
+    %This{this | extracted: [{name, value} | this.extracted]}
   end
 
 
@@ -95,9 +97,20 @@ defmodule Validix.Source do
 
   @spec handle_error(This.t, term) :: This.t | no_return
 
+  def handle_error(this, %Validix.Error{} = error) do
+    if get_opt(this, :raise_on_error, false) do
+      raise error
+    else
+      %This{this | error: error}
+    end
+  end
+
   def handle_error(this, reason) do
-    ## TODO Set this state to error/raise
-    %This{this | error: reason}
+    if get_opt(this, :raise_on_error, false) do
+      raise Validix.Error, reason: reason, message: "Validation failed"
+    else
+      %This{this | error: reason}
+    end
   end
 
 
