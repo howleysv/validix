@@ -7,18 +7,13 @@ defmodule Validix.Pipeline do
   @protocol_fun_arity 5
 
 
+  ## Generate a static pipeline from the app config
+  pipeline = Application.get_env(:validix, :pipeline, [])
+
   @spec pipeline() :: [Stage.t]
 
   def pipeline() do
-    [
-      # Stage.Convert,
-      Stage.Assert,
-      Stage.Allowed,
-      # Stage.Regex,
-      # Stage.Empty,
-      # Stage.Length,
-      # Stage.Postprocess,
-    ]
+    unquote(pipeline)
   end
 
 

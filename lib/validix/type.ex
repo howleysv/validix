@@ -1,8 +1,12 @@
 defmodule Validix.Type do
 
-  @type key :: atom | {atom, term}
+  alias Validix.Type.Generated
 
-  @callback types() :: %{required(name :: key) => parent :: key}
+
+  @type key :: atom | {atom, term}
+  @type type_map :: %{required(name :: key) => parent :: key}
+
+  @callback types() :: type_map
   @callback valid?(key, term) :: {:ok, boolean} | {:any | :all, [{key, term}, ...]}
 
   defmacro __using__(_) do
@@ -13,18 +17,25 @@ defmodule Validix.Type do
   end
 
 
-  def type_map, do: Validix.Type.Core.types()
+  @spec type_map() :: type_map
 
-
-  @spec parent_type(key) :: {:ok, key} | :error
-
-  def parent_type({type, _args}), do: Map.fetch(type_map(), {type, :args})
-
-  def parent_type(type), do: Map.fetch(type_map(), type)
+  defdelegate type_map(), to: Generated
 
 
   @spec type_module(key) :: module
 
-  def type_module(_), do: Validix.Type.Core
+  defdelegate type_module(type), to: Generated
+
+
+  @spec parent_type(key) :: {:ok, key} | :error
+
+  def parent_type(type), do: Map.fetch(type_map(), type_lookup_key(type))
+
+
+  @spec type_lookup_key(key) :: key
+
+  def type_lookup_key({type, _}), do: {type, :args}
+
+  def type_lookup_key(type), do: type
 
 end
