@@ -1,6 +1,6 @@
 defmodule ValidixTest do
 
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import Validix
 
@@ -128,7 +128,13 @@ defmodule ValidixTest do
         |> required_integer(:str)
         |> required_integer(:int)
         |> into(%{})
-      assert {:error, %{reason: :bad_type, field: :str, type: :integer, value: "spam"}} = res
+      assert {:error, reason} = res
+      assert %{
+        reason: :bad_type,
+        field: :str,
+        type: :integer,
+        value: "spam",
+      } = reason
     end
   end
 

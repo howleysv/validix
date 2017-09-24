@@ -83,7 +83,6 @@ defmodule Validix do
   def into(source, target), do: Source.into(source, target)
 
 
-  ## Auto gernetated type functions
   ## Auto generate validation functions from the type map
   for {type, _} <- Type.type_map(), is_atom(type) do
     @spec unquote(String.to_atom("required_#{type}"))(Source.t, field :: term) :: Source.t | no_return
