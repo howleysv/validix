@@ -151,12 +151,18 @@ defmodule ValidixTest do
       end
     end
     for obj <- objs do
-      assert_raise Validix.Error, fn ->
+      e = assert_raise Validix.Error, fn ->
         extract!(obj)
           |> required_integer(:str)
           |> required_integer(:int)
           |> into(%{})
       end
+      assert %{
+        reason: :bad_type,
+        field: :str,
+        type: :integer,
+        value: "spam",
+      } = e
     end
   end
 
