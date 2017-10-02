@@ -27,9 +27,9 @@ defmodule Validix.Type do
   defdelegate type_module(type), to: Generated
 
 
-  @spec parent_type(key) :: {:ok, key} | :error
+  @spec parent_type(key) :: key
 
-  def parent_type(type), do: Map.fetch(type_map(), type_lookup_key(type))
+  def parent_type(type), do: Map.fetch!(type_map(), type_lookup_key(type))
 
 
   @spec type_lookup_key(key) :: key

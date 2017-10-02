@@ -22,9 +22,8 @@ defmodule Validix.Stage.Assert do
 
   defp assert(type, value) do
     parent_type_valid? = case Type.parent_type(type) do
-      {:ok, nil} -> true
-      {:ok, parent_type} -> assert(parent_type, value)
-      :error -> false
+      nil -> true
+      parent_type -> assert(parent_type, value)
     end
     parent_type_valid? and valid?(type, value)
   end

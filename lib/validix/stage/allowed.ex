@@ -1,6 +1,6 @@
 defprotocol Validix.Stage.Allowed do
 
-  @spec allowed(any, field :: term, type :: Type.key, value :: term, args :: term)
+  @spec allowed(any, field :: term, type :: Type.key, value :: term, Enumerable.t)
       :: {:ok, value :: term} | {:error, term} | :parent
 
   def allowed(_, field, type, value, args)
