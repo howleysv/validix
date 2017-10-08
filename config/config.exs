@@ -6,7 +6,7 @@ config :validix,
     Validix.Type.Json,
   ],
   pipeline: [
-    # Validix.Stage.Convert,
+    Validix.Stage.Convert,
     Validix.Stage.Assert,
     Validix.Stage.Allowed,
     Validix.Stage.Regex,
