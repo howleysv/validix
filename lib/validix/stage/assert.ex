@@ -30,7 +30,8 @@ defmodule Validix.Stage.Assert do
 
 
   defp valid?(type, value) do
-    case Validix.Type.Core.valid?(type, value) do
+    type_mod = Type.type_module(type)
+    case type_mod.valid?(type, value) do
       {:ok, valid?} -> valid?
       {:any, pairs} -> Enum.any?(pairs, fn({t, v}) -> assert(t, v) end)
       {:all, pairs} -> Enum.all?(pairs, fn({t, v}) -> assert(t, v) end)

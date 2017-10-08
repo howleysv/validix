@@ -3,7 +3,7 @@ use Mix.Config
 config :validix,
   types: [
     Validix.Type.Core,
-    # Validix.Type.Json,
+    Validix.Type.Json,
   ],
   pipeline: [
     # Validix.Stage.Convert,

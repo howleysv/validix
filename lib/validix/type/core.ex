@@ -9,11 +9,11 @@ defmodule Validix.Type.Core do
     %{
       {:value, :args} => :any,
       {:struct, :args} => :map,
-      {:one_of, :args} => :defined,
+      {:one_of, :args} => :any,
       {:list_of, :args} => :list,
       {:map_of, :args} => :map,
       {:set_of, :args} => :set,
-      {:tuple_of, :args} => :defined,
+      {:tuple_of, :args} => :tuple,
 
       any: nil,
       defined: :any,
@@ -65,9 +65,11 @@ defmodule Validix.Type.Core do
   end
 
   def valid?({:map_of, {key_type, value_type}}, value) do
-    checks = Enum.reduce(value, [], fn({k, v}, acc) ->
-      [{key_type, k}, {value_type, v} | acc]
-    end)
+    checks = value
+      |> Map.to_list
+      |> Enum.reduce([], fn({k, v}, acc) ->
+        [{key_type, k}, {value_type, v} | acc]
+      end)
     {:all, checks}
   end
 
