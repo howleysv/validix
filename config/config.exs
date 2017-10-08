@@ -9,7 +9,7 @@ config :validix,
     # Validix.Stage.Convert,
     Validix.Stage.Assert,
     Validix.Stage.Allowed,
-    # Validix.Stage.Regex,
+    Validix.Stage.Regex,
     Validix.Stage.Size,
     # Validix.Stage.Postprocess,
   ]
