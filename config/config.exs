@@ -11,5 +11,5 @@ config :validix,
     Validix.Stage.Allowed,
     Validix.Stage.Regex,
     Validix.Stage.Size,
-    # Validix.Stage.Postprocess,
+    Validix.Stage.Postprocess,
   ]

@@ -10,8 +10,8 @@ end
 
 defimpl Validix.Stage.Allowed, for: Validix.Type.Core do
 
-  def allowed(_, field, type, value, args) do
-    if value in args do
+  def allowed(_, field, type, value, allowed) do
+    if value in allowed do
       {:ok, value}
     else
       error = %Validix.Error{
